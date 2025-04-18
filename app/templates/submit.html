@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Submit a Post</h2>
+<form method="post">
+    Title: <input type="text" name="title"><br><br>
+    Content:<br>
+    <textarea name="content" rows="5" cols="50"></textarea><br>
+    <button type="submit">Submit</button>
+</form>
+
+<!-- ✅ Back to main page button -->
+<a href="{{ url_for('main.index') }}">
+    <button type="button">← Back to Main Page</button>
+</a>
+
+{% endblock %}

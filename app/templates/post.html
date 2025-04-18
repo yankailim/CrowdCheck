@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ post.title }}</h2>
+<p>{{ post.content }}</p>
+
+<!-- Vote Form -->
+<form method="post">
+    <label for="vote">Your truthfulness vote:</label>
+    <select name="vote">
+        <option value="True" {% if user_vote == 'True' %}selected{% endif %}>True</option>
+        <option value="Misleading" {% if user_vote == 'Misleading' %}selected{% endif %}>Misleading</option>
+        <option value="Fake" {% if user_vote == 'Fake' %}selected{% endif %}>Fake</option>
+        <option value="Unclear" {% if user_vote == 'Unclear' %}selected{% endif %}>Unclear</option>
+    </select>
+    <button type="submit">Submit Vote</button>
+</form>
+
+<h3>Your vote:</h3>
+<ul>
+    {% for v in votes %}
+        {% if v.user_id == session['user_id'] %}
+            <li>
+            <strong>{{ v.vote }}</strong>
+            </li>
+        {% endif %}
+    {% endfor %}
+
+    <!-- {% for v in votes %}
+            {% if v.user_id != session['user_id'] %}
+                <li>
+                {{ v.vote }}
+                </li>
+            {% endif %}
+    {% endfor %} -->
+</ul>
+
+<!-- ✅ Majority vote label -->
+{% if majority_vote %}
+    <h4>🧠 Most likely truthfulness: <strong>{{ majority_vote }}</strong></h4>
+{% endif %}
+
+<!-- ✅ Chart.js vote distribution -->
+<h3>Vote Distribution</h3>
+<canvas id="voteChart" width="50" height="10"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('voteChart').getContext('2d');
+    const voteChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ vote_labels | tojson }},
+            datasets: [{
+                label: '# of Votes',
+                data: {{ chart_data | tojson }},
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(201, 203, 207, 0.6)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(201, 203, 207, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+</script>
+
+<!-- ✅ Back to main page button -->
+<a href="{{ url_for('main.index') }}">
+    <button type="button">← Back to Main Page</button>
+</a>
+
+{% endblock %}

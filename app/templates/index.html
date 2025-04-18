@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Submitted Posts</h2>
+<a href="{{ url_for('main.submit') }}">Submit New</a>
+<ul>
+    {% for post in posts %}
+    <li>
+        <a href="{{ url_for('main.post', post_id=post.id) }}">{{ post.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
